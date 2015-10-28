@@ -1,0 +1,13 @@
+parameters:
+    globals:
+        - doctrine_mongo_connection.server
+        - doctrine_mongo_connection.options
+        - doctrine_mongo_connection.default_database
+    configuration_configs:
+        doctrine_mongo_connection:
+            server: 'mongodb://172.16.4.106:27017'
+            options:
+                username: stdev
+                password: stdev
+                db: admin
+            default_database: ccicoredb

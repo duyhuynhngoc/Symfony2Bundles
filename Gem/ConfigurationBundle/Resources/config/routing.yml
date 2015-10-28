@@ -1,0 +1,6 @@
+gem_configuration_buildconfiguration:
+    path:     /congiguration/buildconfiguration
+    defaults: { _controller: CcicoreConfigurationBundle:Configuration:buildConfig }
+gem_configuration_save:
+    path:     /congiguration/save
+    defaults: { _controller: CcicoreConfigurationBundle:Configuration:saveConfig }
