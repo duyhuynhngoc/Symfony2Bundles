@@ -17,14 +17,17 @@ This bundle used to setting automatic configuration of system.
                     db: admin
                 default_database: test
 
-    The value of 'doctrine_mongo_connection.server' parameter is 'mongodb://localhost:27017'
-    The value of 'doctrine_mongo_connection.options' parameter is [username=> admin, password=> admin, db=> admin]
+    - The value of 'doctrine_mongo_connection.server' parameter is 'mongodb://localhost:27017'
+    - The value of 'doctrine_mongo_connection.options' parameter is [username=> admin, password=> admin, db=> admin]
     ```
+    
 2. Get config
     ```
         $mongo_connection = \Gem\ConfigurationBundle\Lib\Configuration::getConfig('doctrine_mongo_connection');
+        
         $mongo_default_database = \Gem\ConfigurationBundle\Lib\Configuration::getConfig('doctrine_mongo_connection.default_database');
     ```
+    
 # License
 ```
 The MIT License (MIT)
