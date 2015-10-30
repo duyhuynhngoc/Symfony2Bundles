@@ -1,0 +1,4 @@
+
+gem_test_security_controller:
+    path:     /test/security/controller
+    defaults: { _controller: GemTestBundle:Security/Security:controllerTest }

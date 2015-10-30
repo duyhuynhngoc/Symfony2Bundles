@@ -35,7 +35,7 @@ class Configuration {
         return $data;
     }
 
-    public static function rebuildContainer($env = "prod")
+    public static function rebuildContainer()
     {
         $filesystem   = self::getContainer()->get('filesystem');
         $realCacheDir = self::getContainer()->getParameter('kernel.cache_dir');
