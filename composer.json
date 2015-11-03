@@ -4,5 +4,5 @@
     "psr-4":{"":""}
   },
   "minimum-stability": "dev",
-  "version":"1.0.1"
+  "version":"1.0.2"
 }
