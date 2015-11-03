@@ -129,6 +129,7 @@ class ScriptHandler
 
         try {
             $kernel = new AppKernel("dev", true);
+            var_dump("oooook");
             #$application = new Application($kernel);
 
             $manip = new KernelManipulator($kernel);
