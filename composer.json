@@ -1,0 +1,8 @@
+{
+  "name":"duyhuynhngoc/Symfony2Bundles",
+  "autoload":{
+    "psr-4":{"duyhuynhngoc\\":"src/"}
+  },
+  "minimum-stability": "dev",
+  "version":"1.0.1"
+}
