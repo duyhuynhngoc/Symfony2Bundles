@@ -1,7 +1,7 @@
 {
   "name":"duyhuynhngoc/Symfony2Bundles",
   "autoload":{
-    "psr-4":{"Gem\\":""}
+    "psr-4":{"DuyHuynh\\":""}
   },
   "minimum-stability": "dev",
   "version":"1.0.1"
