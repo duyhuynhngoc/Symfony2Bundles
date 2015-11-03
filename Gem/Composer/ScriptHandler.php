@@ -12,8 +12,6 @@
 namespace Gem\Composer;
 
 use Sensio\Bundle\GeneratorBundle\Manipulator\KernelManipulator;
-use Symfony\Component\ClassLoader\ClassCollectionLoader;
-use Symfony\Component\Console\Application;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\PhpExecutableFinder;
