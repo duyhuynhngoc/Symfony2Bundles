@@ -12,7 +12,12 @@
 namespace Gem\Composer;
 
 use Sensio\Bundle\GeneratorBundle\Manipulator\KernelManipulator;
+use Sensio\Bundle\GeneratorBundle\Command\Helper;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Composer\Script\CommandEvent;
@@ -35,6 +40,94 @@ class ScriptHandler
     );
 
 
+    public static function updateKernel(CommandEvent $event)
+    {
+        require_once static::$options['symfony-app-dir'] . '/AppKernel.php';
+
+        $auto = true;
+        $kernel = new \AppKernel("dev", true);
+        $manip = new KernelManipulator($kernel);
+        $input = new ArgvInput();
+        $output = new ConsoleOutput();
+        $questionHelper = new Helper\QuestionHelper();
+
+        try {
+
+            $bundles = static::findBundle();
+
+            foreach ($bundles as $bundle) {
+                $namespace = static::getNamespace($bundle);
+                $bundleName = static::getBundleName($bundle);
+
+                if (!static::existsBundle($namespace, $bundleName))
+                    continue;
+
+                $agree = true;
+                if ($input->isInteractive()) {
+                    $text = 'Confirm registration <fg=white;options=bold>' . $bundleName . '</> bundle';
+                    $question = new ConfirmationQuestion($questionHelper->getQuestion($text, 'yes', '?'), true);
+                    $agree = $questionHelper->ask($input, $output, $question);
+                }
+                $ret = true;
+                try {
+                    $ret = $agree ? $manip->addBundle($namespace . '\\' . $bundleName) : false;
+                } catch (\Exception $e) {}
+
+                if (!$ret) {
+                    $reflected = new \ReflectionObject($kernel);
+                } else {
+                    $output->writeln('<fg=green;options=bold>Successful!</>');
+                }
+
+
+            }
+        }catch(\Exception $e){
+            $output->writeln('<fg=red>'.$e->getMessage().'</>');
+        }
+    }
+
+    protected static function findBundle()
+    {
+        $bundles = array();
+
+        $finder = new Finder();
+
+        $finder->depth(0)->directories()->in(__DIR__."/../");
+
+        foreach ($finder as $dir) {
+            $bundleName = $dir->getRelativePathname();
+
+            if($bundleName == "Composer")
+                continue;
+            $bundles[] = $bundleName;
+        }
+
+        return $bundles;
+    }
+
+    protected static function getNamespace($bundle)
+    {
+        return dirname(__NAMESPACE__)."\\".$bundle;
+    }
+
+    protected static function getBundleName($bundle)
+    {
+        $name = str_replace("\\", "", dirname(__NAMESPACE__));
+        return $name.$bundle;
+    }
+
+
+    protected static function existsBundle($namespace ,$bundleName)
+    {
+        $cls = $namespace."\\".$bundleName;
+
+        if(!class_exists($cls)){
+            return false;
+        }
+
+        return true;
+    }
+
     protected static function hasDirectory(CommandEvent $event, $configName, $path, $actionName)
     {
         if (!is_dir($path)) {
@@ -45,97 +138,6 @@ class ScriptHandler
 
         return true;
     }
-
-
-    protected static function prepareDeploymentTargetHeroku(CommandEvent $event)
-    {
-        $options = static::getOptions($event);
-        if (($stack = getenv('STACK')) && ($stack == 'cedar' || $stack == 'cedar-14')) {
-            $fs = new Filesystem();
-            if (!$fs->exists('Procfile')) {
-                $event->getIO()->write('Heroku deploy detected; creating default Procfile for "web" dyno');
-                $fs->dumpFile('Procfile', sprintf('web: $(composer config bin-dir)/heroku-php-apache2 %s/', $options['symfony-web-dir']));
-            }
-        }
-    }
-
-    /**
-     * Clears the Symfony cache.
-     *
-     * @param $event CommandEvent A instance
-     */
-    public static function clearCache(CommandEvent $event)
-    {
-        $options = static::getOptions($event);
-        $consoleDir = static::getConsoleDir($event, 'clear the cache');
-
-        if (null === $consoleDir) {
-            return;
-        }
-
-        $warmup = '';
-        if (!$options['symfony-cache-warmup']) {
-            $warmup = ' --no-warmup';
-        }
-
-        static::executeCommand($event, $consoleDir, 'cache:clear'.$warmup, $options['process-timeout']);
-    }
-
-    /**
-     * Installs the assets under the web root directory.
-     *
-     * For better interoperability, assets are copied instead of symlinked by default.
-     *
-     * Even if symlinks work on Windows, this is only true on Windows Vista and later,
-     * but then, only when running the console with admin rights or when disabling the
-     * strict user permission checks (which can be done on Windows 7 but not on Windows
-     * Vista).
-     *
-     * @param $event CommandEvent A instance
-     */
-    public static function installAssets(CommandEvent $event)
-    {
-        $options = static::getOptions($event);
-        $consoleDir = static::getConsoleDir($event, 'install assets');
-
-        if (null === $consoleDir) {
-            return;
-        }
-
-        $webDir = $options['symfony-web-dir'];
-
-        $symlink = '';
-        if ($options['symfony-assets-install'] == 'symlink') {
-            $symlink = '--symlink ';
-        } elseif ($options['symfony-assets-install'] == 'relative') {
-            $symlink = '--symlink --relative ';
-        }
-
-        if (!static::hasDirectory($event, 'symfony-web-dir', $webDir, 'install assets')) {
-            return;
-        }
-
-        static::executeCommand($event, $consoleDir, 'assets:install '.$symlink.escapeshellarg($webDir), $options['process-timeout']);
-    }
-
-
-
-    public static function updateKernel(CommandEvent $event)
-    {
-        require_once static::$options['symfony-app-dir'].'/AppKernel.php';
-        require_once static::$options['symfony-app-dir'].'/bootstrap.php.cache';
-
-        try {
-            $kernel = new AppKernel("dev", true);
-            var_dump("oooook");
-            #$application = new Application($kernel);
-
-            $manip = new KernelManipulator($kernel);
-        }catch (\Exception $e){
-            var_dump("ajsdjaljdsajdjsalj");
-        }
-    }
-
 
 
     protected static function executeCommand(CommandEvent $event, $consoleDir, $cmd, $timeout = 300)
@@ -154,159 +156,4 @@ class ScriptHandler
         }
     }
 
-    protected static function executeBuildBootstrap(CommandEvent $event, $bootstrapDir, $autoloadDir, $timeout = 300)
-    {
-        $php = escapeshellarg(static::getPhp(false));
-        $phpArgs = implode(' ', array_map('escapeshellarg', static::getPhpArguments()));
-        $cmd = escapeshellarg(__DIR__.'/../Resources/bin/build_bootstrap.php');
-        $bootstrapDir = escapeshellarg($bootstrapDir);
-        $autoloadDir = escapeshellarg($autoloadDir);
-        $useNewDirectoryStructure = '';
-        if (static::useNewDirectoryStructure(static::getOptions($event))) {
-            $useNewDirectoryStructure = escapeshellarg('--use-new-directory-structure');
-        }
-
-        $process = new Process($php.($phpArgs ? ' '.$phpArgs : '').' '.$cmd.' '.$bootstrapDir.' '.$autoloadDir.' '.$useNewDirectoryStructure, getcwd(), null, null, $timeout);
-        $process->run(function ($type, $buffer) use ($event) { $event->getIO()->write($buffer, false); });
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException('An error occurred when generating the bootstrap file.');
-        }
-    }
-
-    protected static function updateDirectoryStructure(CommandEvent $event, $rootDir, $appDir, $binDir, $varDir, $webDir)
-    {
-        $event->getIO()->write('Updating Symfony directory structure...');
-
-        $fs = new Filesystem();
-
-        $fs->mkdir(array($binDir, $varDir));
-
-        foreach (array(
-            $appDir.'/console' => $binDir.'/console',
-            $appDir.'/phpunit.xml.dist' => $rootDir.'/phpunit.xml.dist',
-        ) as $source => $target) {
-            $fs->rename($source, $target, true);
-        }
-
-        foreach (array('/logs', '/cache') as $dir) {
-            $fs->rename($appDir.$dir, $varDir.$dir);
-        }
-
-        $gitignore = <<<EOF
-/web/bundles/
-/app/config/parameters.yml
-/var/bootstrap.php.cache
-/var/SymfonyRequirements.php
-/var/cache/*
-/var/logs/*
-!var/cache/.gitkeep
-!var/logs/.gitkeep
-/build/
-/vendor/
-/bin/*
-!bin/console
-!bin/symfony_requirements
-/composer.phar
-EOF;
-        $phpunitKernelBefore = <<<EOF
-    <!--
-    <php>
-        <server name="KERNEL_DIR" value="/path/to/your/app/" />
-    </php>
-    -->
-EOF;
-        $phpunitKernelAfter = <<<EOF
-    <php>
-        <server name="KERNEL_DIR" value="$appDir/" />
-    </php>
-EOF;
-        $phpunit = str_replace(array('<directory>../src', '"bootstrap.php.cache"', $phpunitKernelBefore), array('<directory>src', '"'.$varDir.'/bootstrap.php.cache"', $phpunitKernelAfter), file_get_contents($rootDir.'/phpunit.xml.dist'));
-        $composer = str_replace('"symfony-app-dir": "app",', "\"symfony-app-dir\": \"app\",\n        \"symfony-bin-dir\": \"bin\",\n        \"symfony-var-dir\": \"var\",", file_get_contents($rootDir.'/composer.json'));
-
-        $fs->dumpFile($webDir.'/app.php', str_replace($appDir.'/bootstrap.php.cache', $varDir.'/bootstrap.php.cache', file_get_contents($webDir.'/app.php')));
-        $fs->dumpFile($webDir.'/app_dev.php', str_replace($appDir.'/bootstrap.php.cache', $varDir.'/bootstrap.php.cache', file_get_contents($webDir.'/app_dev.php')));
-        $fs->dumpFile($binDir.'/console', str_replace(array(".'/bootstrap.php.cache'", ".'/AppKernel.php'"), array(".'/".$fs->makePathRelative($varDir, $binDir)."bootstrap.php.cache'", ".'/".$fs->makePathRelative($appDir, $binDir)."AppKernel.php'"), file_get_contents($binDir.'/console')));
-        $fs->dumpFile($rootDir.'/phpunit.xml.dist', $phpunit);
-        $fs->dumpFile($rootDir.'/composer.json', $composer);
-
-        $fs->dumpFile($rootDir.'/.gitignore', $gitignore);
-
-        $fs->chmod($binDir.'/console', 0755);
-    }
-
-    protected static function getOptions(CommandEvent $event)
-    {
-        $options = array_merge(static::$options, $event->getComposer()->getPackage()->getExtra());
-
-        $options['symfony-assets-install'] = getenv('SYMFONY_ASSETS_INSTALL') ?: $options['symfony-assets-install'];
-
-        $options['process-timeout'] = $event->getComposer()->getConfig()->get('process-timeout');
-
-        return $options;
-    }
-
-    protected static function getPhp($includeArgs = true)
-    {
-        $phpFinder = new PhpExecutableFinder();
-        if (!$phpPath = $phpFinder->find($includeArgs)) {
-            throw new \RuntimeException('The php executable could not be found, add it to your PATH environment variable and try again');
-        }
-
-        return $phpPath;
-    }
-
-    protected static function getPhpArguments()
-    {
-        $arguments = array();
-
-        $phpFinder = new PhpExecutableFinder();
-        if (method_exists($phpFinder, 'findArguments')) {
-            $arguments = $phpFinder->findArguments();
-        }
-
-        if (false !== $ini = php_ini_loaded_file()) {
-            $arguments[] = '--php-ini='.$ini;
-        }
-
-        return $arguments;
-    }
-
-    /**
-     * Returns a relative path to the directory that contains the `console` command.
-     *
-     * @param CommandEvent $event      The command event.
-     * @param string       $actionName The name of the action
-     *
-     * @return string|null The path to the console directory, null if not found.
-     */
-    protected static function getConsoleDir(CommandEvent $event, $actionName)
-    {
-        $options = static::getOptions($event);
-
-        if (static::useNewDirectoryStructure($options)) {
-            if (!static::hasDirectory($event, 'symfony-bin-dir', $options['symfony-bin-dir'], $actionName)) {
-                return;
-            }
-
-            return $options['symfony-bin-dir'];
-        }
-
-        if (!static::hasDirectory($event, 'symfony-app-dir', $options['symfony-app-dir'], 'execute command')) {
-            return;
-        }
-
-        return $options['symfony-app-dir'];
-    }
-
-    /**
-     * Returns true if the new directory structure is used.
-     *
-     * @param array $options Composer options
-     *
-     * @return bool
-     */
-    protected static function useNewDirectoryStructure(array $options)
-    {
-        return isset($options['symfony-var-dir']) && is_dir($options['symfony-var-dir']);
-    }
 }
