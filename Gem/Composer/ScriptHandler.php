@@ -13,6 +13,7 @@ namespace Gem\Composer;
 
 use Sensio\Bundle\GeneratorBundle\Manipulator\KernelManipulator;
 use Sensio\Bundle\GeneratorBundle\Command\Helper;
+use Sensio\Bundle\GeneratorBundle\Manipulator\RoutingManipulator;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -76,6 +77,7 @@ class ScriptHandler
                 if (!$ret) {
                     $reflected = new \ReflectionObject($kernel);
                 } else {
+                    self::updateRouting($namespace, $bundleName);
                     $output->writeln('<fg=green;options=bold>Successful!</>');
                 }
 
@@ -84,6 +86,23 @@ class ScriptHandler
         }catch(\Exception $e){
             $output->writeln('<fg=red>'.$e->getMessage().'</>');
         }
+    }
+
+    protected static function updateRouting($namespace, $bundle, $format = "yml")
+    {
+        $routing = new RoutingManipulator(static::$options['symfony-app-dir'].'/config/routing.yml');
+
+        $file = __DIR__.'/../'.$namespace.'/Resources/config/routing.'.$format;
+
+        if(file_exists($file)){
+            $routing->addResource($bundle, $format);
+        }
+    }
+
+
+    public static function removeBundle()
+    {
+
     }
 
     protected static function findBundle()
