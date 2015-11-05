@@ -1,5 +1,5 @@
 {
-  "name":"duyhuynhngoc/Symfony2Bundles/Scripts",
+  "name":"duyhuynhngoc/Symfony2Bundles/Gem/Scripts",
   "autoload":{
     "psr-4":{"":""}
   },
