@@ -1,0 +1,81 @@
+Gem\SystemBundle\Entity\Menus:
+    type: entity
+    table: menus
+    indexes:
+        fk_menus_menus1_idx:
+            columns:
+                - parent
+        fk_menus_users1_idx:
+            columns:
+                - modifiedby
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        name:
+            type: string
+            nullable: false
+            length: 50
+            options:
+                fixed: false
+        alias:
+            type: string
+            nullable: true
+            length: 100
+            options:
+                fixed: false
+        level:
+            type: smallint
+            nullable: false
+            options:
+                unsigned: false
+                default: '1'
+        event:
+            type: string
+            nullable: true
+            length: 100
+            options:
+                fixed: false
+        lastmodified:
+            type: datetime
+            nullable: true
+        isdeleted:
+            type: smallint
+            nullable: true
+            options:
+                unsigned: false
+                default: '0'
+        view:
+            type: string
+            nullable: true
+            length: 50
+            options:
+                fixed: false
+    manyToOne:
+        parent:
+            targetEntity: Menus
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                parent:
+                    referencedColumnName: id
+            orphanRemoval: false
+        modifiedby:
+            targetEntity: Users
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                modifiedby:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

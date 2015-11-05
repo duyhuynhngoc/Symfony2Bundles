@@ -1,0 +1,64 @@
+Gem\SystemBundle\Entity\Modulefunction:
+    type: entity
+    table: modulefunction
+    indexes:
+        fk_modulefunc_function1_idx:
+            columns:
+                - functionid
+        fk_modulefunc_modules1_idx:
+            columns:
+                - moduleid
+        fk_modulefunc_users1_idx:
+            columns:
+                - modifiedby
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        lastmodified:
+            type: datetime
+            nullable: true
+        isdeleted:
+            type: smallint
+            nullable: true
+            options:
+                unsigned: false
+                default: '0'
+    manyToOne:
+        functionid:
+            targetEntity: Functions
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                functionid:
+                    referencedColumnName: id
+            orphanRemoval: false
+        moduleid:
+            targetEntity: Modules
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                moduleid:
+                    referencedColumnName: id
+            orphanRemoval: false
+        modifiedby:
+            targetEntity: Users
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                modifiedby:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

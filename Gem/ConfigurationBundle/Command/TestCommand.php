@@ -1,6 +1,6 @@
 <?php
 /**
- * Code Owner: CCIntegration Inc. S.P.I.D.E.R framework
+ * Code Owner: Duy Huynh
  * Modified date: 10/16/2015
  * Modified by: Duy Huynh
  */
@@ -24,6 +24,6 @@ class TestCommand extends ContainerAwareCommand {
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Configuration::rebuildContainer();
+
     }
 }

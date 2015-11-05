@@ -10,11 +10,6 @@ namespace Gem\SecurityBundle\Lib;
 
 class Authentication {
 
-    public static function test()
-    {
-        echo "Successful!";
-    }
-
     public function checkAuthen($apikey)
     {
 

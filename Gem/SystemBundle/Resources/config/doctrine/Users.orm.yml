@@ -1,0 +1,104 @@
+Gem\SystemBundle\Entity\Users:
+    type: entity
+    table: users
+    indexes:
+        fk_users_roles1_idx:
+            columns:
+                - roleid
+        fk_users_users1_idx:
+            columns:
+                - parent
+        FK_users_user:
+            columns:
+                - modifiedby
+    uniqueConstraints:
+        email_UNIQUE:
+            columns:
+                - email
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        accountname:
+            type: string
+            nullable: false
+            length: 50
+            options:
+                fixed: false
+        fullname:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        email:
+            type: string
+            nullable: false
+            length: 100
+            options:
+                fixed: false
+        phone1:
+            type: string
+            nullable: true
+            length: 20
+            options:
+                fixed: false
+        phone2:
+            type: string
+            nullable: true
+            length: 20
+            options:
+                fixed: false
+        password:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        lastmodified:
+            type: datetime
+            nullable: true
+        isdeleted:
+            type: smallint
+            nullable: true
+            options:
+                unsigned: false
+                default: '0'
+    manyToOne:
+        roleid:
+            targetEntity: Roles
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                roleid:
+                    referencedColumnName: id
+            orphanRemoval: false
+        modifiedby:
+            targetEntity: Users
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                modifiedby:
+                    referencedColumnName: id
+            orphanRemoval: false
+        parent:
+            targetEntity: Users
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                parent:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

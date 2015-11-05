@@ -1,0 +1,44 @@
+Gem\SystemBundle\Entity\Functions:
+    type: entity
+    table: functions
+    indexes:
+        FK_functions:
+            columns:
+                - modifiedby
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        name:
+            type: string
+            nullable: true
+            length: 100
+            options:
+                fixed: false
+        isdeleted:
+            type: smallint
+            nullable: true
+            options:
+                unsigned: false
+                default: '0'
+        lastmodified:
+            type: datetime
+            nullable: true
+    manyToOne:
+        modifiedby:
+            targetEntity: Users
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                modifiedby:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

@@ -1,0 +1,64 @@
+Gem\SystemBundle\Entity\Functionaction:
+    type: entity
+    table: functionaction
+    indexes:
+        fk_funccaction_actions1_idx:
+            columns:
+                - actionid
+        fk_funccaction_function1_idx:
+            columns:
+                - functionid
+        fk_funcaction_users1_idx:
+            columns:
+                - modifiedby
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        lastmodified:
+            type: datetime
+            nullable: true
+        isdeleted:
+            type: smallint
+            nullable: true
+            options:
+                unsigned: false
+                default: '0'
+    manyToOne:
+        modifiedby:
+            targetEntity: Users
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                modifiedby:
+                    referencedColumnName: id
+            orphanRemoval: false
+        actionid:
+            targetEntity: Actions
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                actionid:
+                    referencedColumnName: id
+            orphanRemoval: false
+        functionid:
+            targetEntity: Functions
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                functionid:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

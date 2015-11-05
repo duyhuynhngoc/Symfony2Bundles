@@ -1,0 +1,50 @@
+Gem\SystemBundle\Entity\Configs:
+    type: entity
+    table: configs
+    indexes:
+        modified_by_fk:
+            columns:
+                - modifiedby
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        name:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+        value:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+        lastmodified:
+            type: datetime
+            nullable: false
+        isdeleted:
+            type: smallint
+            nullable: true
+            options:
+                unsigned: false
+                default: '0'
+    manyToOne:
+        modifiedby:
+            targetEntity: Users
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                modifiedby:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

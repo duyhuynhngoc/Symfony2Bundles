@@ -1,0 +1,63 @@
+Gem\SystemBundle\Entity\Rolemenu:
+    type: entity
+    table: rolemenu
+    indexes:
+        fk_rolemenu_menus1_idx:
+            columns:
+                - menuid
+        fk_rolemenu_roles1_idx:
+            columns:
+                - roleid
+        fk_rolemenu_users1_idx:
+            columns:
+                - modifiedby
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        lastmodified:
+            type: date
+            nullable: true
+        isdeleted:
+            type: smallint
+            nullable: true
+            options:
+                unsigned: false
+    manyToOne:
+        menuid:
+            targetEntity: Menus
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                menuid:
+                    referencedColumnName: id
+            orphanRemoval: false
+        roleid:
+            targetEntity: Roles
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                roleid:
+                    referencedColumnName: id
+            orphanRemoval: false
+        modifiedby:
+            targetEntity: Users
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                modifiedby:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

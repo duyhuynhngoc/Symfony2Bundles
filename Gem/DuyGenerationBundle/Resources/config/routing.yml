@@ -1,3 +1,0 @@
-gem_duy_generation_homepage:
-    path:     /hello/{name}
-    defaults: { _controller: GemDuyGenerationBundle:Default:index }

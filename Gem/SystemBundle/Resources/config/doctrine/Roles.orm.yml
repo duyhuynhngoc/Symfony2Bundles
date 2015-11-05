@@ -1,0 +1,67 @@
+Gem\SystemBundle\Entity\Roles:
+    type: entity
+    table: roles
+    indexes:
+        fk_roles_roles1_idx:
+            columns:
+                - parent
+        FK_roles:
+            columns:
+                - modifiedby
+    uniqueConstraints:
+        role_name_UNIQUE:
+            columns:
+                - name
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        name:
+            type: string
+            nullable: false
+            length: 50
+            options:
+                fixed: false
+        level:
+            type: smallint
+            nullable: true
+            options:
+                unsigned: false
+                default: '0'
+        lastmodified:
+            type: datetime
+            nullable: true
+        isdeleted:
+            type: smallint
+            nullable: true
+            options:
+                unsigned: false
+                default: '0'
+    manyToOne:
+        modifiedby:
+            targetEntity: Users
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                modifiedby:
+                    referencedColumnName: id
+            orphanRemoval: false
+        parent:
+            targetEntity: Roles
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                parent:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }
