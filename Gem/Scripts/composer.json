@@ -1,5 +1,5 @@
 {
-  "name":"duyhuynhngoc/Symfony2Bundles/Gem/Scripts",
+  "name":"gem/scripts",
   "autoload":{
     "psr-4":{"":""}
   },
