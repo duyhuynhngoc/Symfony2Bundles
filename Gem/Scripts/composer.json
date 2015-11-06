@@ -1,5 +1,5 @@
 {
-  "name":"gem/scripts",
+  "name":"duyhuynhngoc/scripts",
   "autoload":{
     "psr-4":{"":""}
   },
