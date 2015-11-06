@@ -6,11 +6,11 @@
   "repositories": [
         {
             "type": "path",
-            "url": "/Gem/Scripts"
+            "url": "./Gem/Scripts"
         }
     ],
 	 "require": {
-        "duyhuynhngoc/scripts": "*@dev"
+        "duyhuynhngoc/scripts": "dev-master"
     },
   "minimum-stability": "dev",
   "version":"1.0.2"
