@@ -19,7 +19,7 @@ class Entities {
             "modules" => "\\Gem\\SystemBundle\Entity\\Modules",
             "module_function" => "\\Gem\\SystemBundle\Entity\\Modulefunction",
             "menus" => "\\Gem\\SystemBundle\Entity\\Menus",
-            "function" => "\\Gem\\SystemBundle\Entity\\Functions",
+            "functions" => "\\Gem\\SystemBundle\Entity\\Functions",
             "function_action" => "\\Gem\\SystemBundle\Entity\\Functionaction",
             "config" => "\\Gem\\SystemBundle\Entity\\Configs",
             "actions" => "\\Gem\\SystemBundle\Entity\\Actions"

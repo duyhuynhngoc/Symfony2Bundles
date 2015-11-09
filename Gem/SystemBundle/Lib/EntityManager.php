@@ -8,6 +8,7 @@
 namespace Gem\SystemBundle\Lib;
 
 
+use Doctrine\ORM\Query\Expr\Join;
 use Gem\SystemBundle\Config\Entities;
 
 class EntityManager {
@@ -131,8 +132,25 @@ class EntityManager {
         return $datasql->getQuery()->getSingleScalarResult();
     }
 
-    private static function joinTable($entityLeftAlias, $entityRightAlias)
+    private static function joinTable($entityLeftAlias, $entityRightAlias, $searchParams = array())
     {
+        /*$clsl = Entities::getEntityPath($entityLeftAlias);
+        $cls2 = Entities::getEntityPath($entityRightAlias);
+
+        $on = $searchParams['conditionJoin']; //array()
+        $search = isset($searchParams['search'])?$searchParams['search']: array();
+
+        $em = self::getEntityManager();
+        $datasql = $em->createQueryBuilder();    //create query builder
+        $datasql->select('COUNT(t.id)')
+            ->from($clsl, 't')
+            ->leftJoin($cls2, 't2', Join::WITH, 't.'.$on[0].' = t2.'.$on[1]);
+
+        foreach($search as $key=>$value){
+            $datasql->andWhere($datasql->expr()->eq('t.'.$key, '?'.$order));
+            $datasql->setParameter($order, $value);
+            $order++;
+        }*/
 
     }
 
