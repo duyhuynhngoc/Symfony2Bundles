@@ -118,7 +118,7 @@ class EntityManager {
         $em = self::getEntityManager();
 
         $datasql = $em->createQueryBuilder();    //create query builder
-        $datasql->select('COUNT(f.id)')
+        $datasql->select('COUNT(t.id)')
             ->from($cls, 't');
 
         $order = 1;
