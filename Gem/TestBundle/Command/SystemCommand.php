@@ -8,6 +8,7 @@
 namespace Gem\TestBundle\Command;
 
 
+use Gem\SystemBundle\Biz\SystemBiz;
 use Gem\SystemBundle\Lib\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,7 +23,6 @@ class SystemCommand extends ContainerAwareCommand {
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $row = EntityManager::pagingResult('roles', array('limit' => 2, "start"=>0));
-        var_dump(count($row));
+        SystemBiz::saveModule(array('isdisabled'=>true, 'id'=>5));
     }
 }
